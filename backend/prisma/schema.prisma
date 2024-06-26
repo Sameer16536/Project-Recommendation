@@ -13,20 +13,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id @default(autoincrement())
-  email String @unique
-  name String
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
   password String
+  name     String?
+  phone    String?
   projects Project[]
 }
-model Project{
-  id Int @id @default(autoincrement())
-  name String
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
   description String
-  image String
-  prompts String
-  answers String
-  createdBy User? @relation( fields: [createdById], references: [id])
-  createdById Int?
-  }
+  level       String
+  image       String
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  progress    Progress[]
+}
+
+model Progress {
+  id        Int      @id @default(autoincrement())
+  completed Boolean  @default(false)
+  section   String
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id])
+}

@@ -2,10 +2,11 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import zod, { string } from 'zod'
+import zod, { number, string } from 'zod'
 const router = express.Router();
 const prisma = new PrismaClient();
 import dotenv from "dotenv";
+
 dotenv.config()
 
 //Input validation:
@@ -17,7 +18,8 @@ const userLoginSchema = zod.object({
 const userSignUpSchema = zod.object({
     email: zod.string().email(),
     password: string().min(6).max(12),
-    name: string()
+    name: string(),
+    phone:number().min(10).max(10)
 })
 
 
@@ -50,7 +52,7 @@ router.post('/signup', async (req, res) => {
     if (!validation.success) {
         return res.status(400).json({ message: "Invalid body", error: validation.error })
         }
-        const { email, password, name } = req.body
+        const { email, password, name,phone } = req.body
         try {
             const user = await prisma.user.findUnique({ where: { email } })
             if (user) {
@@ -61,7 +63,8 @@ router.post('/signup', async (req, res) => {
                     data:{
                         email,
                         name,
-                        password: hashedPassword
+                        password: hashedPassword,
+                        phone
                     }
                 })
                 const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET as string, {

@@ -1,14 +1,24 @@
-import express from "express";
-import { PrismaClient } from "@prisma/client";
-import bodyParser from "body-parser";
-import cors from "cors";
-import path from "path";
-import  dotenv  from "dotenv";
+import express from 'express';
+import bodyParser from 'body-parser';
+import { PrismaClient } from '@prisma/client';
+import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes';
+import projectRoutes from './routes/projectsRoutes';
+import progressRoutes from './routes/progressRoutes';
 
+dotenv.config();
 
-dotenv.config()
-const app = express()
-const prisma = new PrismaClient()
+const app = express();
+const prisma = new PrismaClient();
 
-//Conversion to Json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+
+app.use('/auth', authRoutes);
+app.use('/projects', projectRoutes);
+app.use('/progress', progressRoutes);
+
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
