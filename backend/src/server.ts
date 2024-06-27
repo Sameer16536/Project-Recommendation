@@ -3,7 +3,8 @@ import bodyParser from 'body-parser';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
-import projectRoutes from './routes/projectsRoutes';
+import projectRoutes from './routes/projectRoutes';
+import userRoutes from './routes/userRoutes';
 import progressRoutes from './routes/progressRoutes';
 
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 
 app.use('/auth', authRoutes);
 app.use('/projects', projectRoutes);
+app.use('/users', userRoutes);
 app.use('/progress', progressRoutes);
 
 const PORT = process.env.PORT || 5000;
